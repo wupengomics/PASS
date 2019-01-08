@@ -78,10 +78,10 @@
 
     - **Output**:
         - genes.gtf             Must add the CDS information
-        - transcript.fa        The sequence header includes protein ID, the corresponding gene ID and the CDS position. 
-                                                         Example: >CUFF.11.2_1|ENSMUSG00000033845.9|CDS:63-218
+        - transcript.fa         The sequence header includes protein ID, the corresponding gene ID and the CDS position. 
+                                Example: >CUFF.11.2_1|ENSMUSG00000033845.9|CDS:63-218
         - protein.fa            The sequence header includes protein ID and the corresponding gene ID. 
-                                                         Example: >CUFF.11.2_1|ENSMUSG00000033845.9
+                                Example: >CUFF.11.2_1|ENSMUSG00000033845.9
 
 
 - **searchMS**:
@@ -119,6 +119,7 @@
         - Default output file: sample.psm.tab
         - Output format:
         The output requires 9 columns:
+	
           No.|Column
           -|-
           1|spectrum
@@ -184,6 +185,7 @@
       fromGTF.ALE.txt
       ```
       - Format:
+      
       Column|Description
       -|-
       ID|AS event id
@@ -222,6 +224,7 @@
       ```
       
       - Format:
+      
       Column|Description
       -|-
       ID|AS event id
