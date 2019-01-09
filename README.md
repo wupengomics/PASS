@@ -3,7 +3,7 @@
 - **Description**: a **P**roteomics **A**lternative **S**plicing **S**creening pipeline.
 
 
-<img src="./workflow.png" width = "60%" height = "60%" />
+<img src="./workflow.png" width = "80%" height = "80%" />
 
 
 - **Version**: 1.0.0
@@ -77,12 +77,14 @@
     - **Example**: `perl getORF.pl -f gene.cuff.sorted.gtf -g human.genome.fa`
 
     - **Output**:
-        - genes.gtf             Must add the CDS information
-        - transcript.fa         The sequence header includes protein ID, the corresponding gene ID and the CDS position. 
-                                Example: >CUFF.11.2_1|ENSMUSG00000033845.9|CDS:63-218
-        - protein.fa            The sequence header includes protein ID and the corresponding gene ID. 
-                                Example: >CUFF.11.2_1|ENSMUSG00000033845.9
-
+    
+    	```
+        genes.gtf             Must add the CDS information
+        transcript.fa         The sequence header includes protein ID, the corresponding gene ID and the CDS position. 
+                              - Example: >CUFF.11.2_1|ENSMUSG00000033845.9|CDS:63-218
+        protein.fa            The sequence header includes protein ID and the corresponding gene ID. 
+                              - Example: >CUFF.11.2_1|ENSMUSG00000033845.9
+	```
 
 - **searchMS**:
 
