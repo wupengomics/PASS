@@ -163,14 +163,13 @@
 
     - **Note**: This function code is sourced from [MATS](https://rnaseq-mats.sourceforge.net).
 
-    - **Usage**: `python detectAS.py [<genes.gtf>] [<outputPrefix>] [<SAMfiles>] [<logFolder>]`
+    - **Usage**: `python detectAS.py [<genes.gtf>] [<outputPrefix>] [<SAMfiles>]`
 
         ```
         genes.gtf           File name of gene annotation, .gtf format.
         outputPrefix        Prefix of output AS event files
         SAMfiles            File name of alignment files. 
                             - Multiple samples are separated by commas.
-        logFolder           Folder of log files, Optional.
         ```
 
     - **Example**: `python detectAS.py genes.gtf fromGTF sample1.sam,sample2.sam ./temp`
