@@ -159,20 +159,19 @@
 
 - **detectAS**:
 
-    - **Description**: Detect AS events from annotation and alignment files.
+    - **Description**: Detect AS events from annotation and alignment file.
 
     - **Note**: This function code is sourced from [MATS](https://rnaseq-mats.sourceforge.net).
 
-    - **Usage**: `python detectAS.py [<genes.gtf>] [<outputPrefix>] [<SAMfiles>]`
+    - **Usage**: `python detectAS.py [<genes.gtf>] [<outputPrefix>] [<SAMfile>]`
 
         ```
         genes.gtf           File name of gene annotation, .gtf format.
         outputPrefix        Prefix of output AS event files
-        SAMfiles            File name of alignment files. 
-                            - Multiple samples are separated by commas.
+        SAMfile            File name of alignment file. 
         ```
 
-    - **Example**: `python detectAS.py genes.gtf fromGTF sample1.sam,sample2.sam ./temp`
+    - **Example**: `python detectAS.py genes.gtf fromGTF sample.sam ./temp`
 
     - **Output**
       - Output files list:
@@ -202,26 +201,25 @@
     - **Description**: Quantify AS by the alignment file.
     - **Note**: This function code is sourced from [MATS](https://rnaseq-mats.sourceforge.net).
 
-    - **Usage**: `python quantifyAS.py [<ASPrefix>] [<SAMfiles>] [<outdir>]`
+    - **Usage**: `python quantifyAS.py [<ASPrefix>] [<SAMfile>] [<outdir>]`
         ```
         ASPrefix         Prefix of AS event files
-        SAMfiles         File name of alignment files. 
-                         - Multiple samples are separated by commas.
+        SAMfile         File name of alignment file. 
         outdir           Folder of output files.
         ```
 
-    - **Example**: `python quantifyAS.py fromGTF sample1.sam,sample2.sam ./`
+    - **Example**: `python quantifyAS.py fromGTF sample.sam ./`
 
     - **Output**
       - Output files list:
       ```
-      JCEC.proteome.SE.txt
-      JCEC.proteome.MXE.txt
-      JCEC.proteome.A5SS.txt
-      JCEC.proteome.A3SS.txt
-      JCEC.proteome.RI.txt
-      JCEC.proteome.AFE.txt
-      JCEC.proteome.ALE.txt
+      JCEC.SE.txt
+      JCEC.MXE.txt
+      JCEC.A5SS.txt
+      JCEC.A3SS.txt
+      JCEC.RI.txt
+      JCEC.AFE.txt
+      JCEC.ALE.txt
       ```
       
       - Format:
