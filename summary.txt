@@ -1,8 +1,0 @@
-AStype	Number
-SE	0
-MXE	0
-A5SS	0
-A3SS	0
-RI	0
-AFE	1
-ALE	0
