@@ -10,7 +10,7 @@
 
 - **Install**
   - unzip PASS-master.zip
-  - chmod a+x \*
+  - chmod a+x *
   - export PATH=/PASS_install_path/:$PATH
 
 - **System requirements**
