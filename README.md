@@ -8,6 +8,10 @@
 
 - **Version**: 1.1.0
 
+- **Install**
+  - unzip PASS-master.zip
+  - chmod a+x \*
+  - export PATH=/PASS_install_path/:$PATH
 
 - **System requirements**
 
