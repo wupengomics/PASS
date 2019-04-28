@@ -1,0 +1,25 @@
+spectrum	spectrumNativeID	assumed_charge	hit_rank	peptide	num_missed_cleavages	mvh	modification	NTT
+example.85704.85704.2	controllerType=0 controllerNumber=1 scan=85704	2	1	YCVGDEVSMADVCLVPQVANAER	na	180	na	1
+example.98388.98388.2	controllerType=0 controllerNumber=1 scan=98388	2	1	MISDLIASGIQPLQNLSVLK	na	142	na	1
+example.99806.99806.2	controllerType=0 controllerNumber=1 scan=99806	2	1	MISDLIASGIQPLQNLSVLK	na	148	na	1
+example.98669.98669.3	controllerType=0 controllerNumber=1 scan=98669	3	1	MISDLIASGIQPLQNLSVLK	na	65	na	1
+example.77090.77090.2	controllerType=0 controllerNumber=1 scan=77090	2	1	YCVGDEVSMADVCLVPQVANAER	na	94	na	1
+example.81912.81912.2	controllerType=0 controllerNumber=1 scan=81912	2	1	DGGQQFTEEFQTLNPMK	na	128	na	1
+example.99802.99802.3	controllerType=0 controllerNumber=1 scan=99802	3	1	MISDLIASGIQPLQNLSVLK	na	91	na	1
+example.28465.28465.2	controllerType=0 controllerNumber=1 scan=28465	2	1	QVGQENQMQWAQK	na	113	na	1
+example.68293.68293.2	controllerType=0 controllerNumber=1 scan=68293	2	1	DGGQQFTEEFQTLNPMK	na	76	na	1
+example.98668.98668.2	controllerType=0 controllerNumber=1 scan=98668	2	1	MISDLIASGIQPLQNLSVLK	na	145	na	1
+example.91720.91720.2	controllerType=0 controllerNumber=1 scan=91720	2	1	GIDYEIVPINLIK	na	102	na	1
+example.92020.92020.2	controllerType=0 controllerNumber=1 scan=92020	2	1	GIDYEIVPINLIK	na	93	na	1
+example.98387.98387.3	controllerType=0 controllerNumber=1 scan=98387	3	1	MISDLIASGIQPLQNLSVLK	na	109	na	1
+example.91402.91402.2	controllerType=0 controllerNumber=1 scan=91402	2	1	GIDYEIVPINLIK	na	99	na	1
+example.85681.85681.3	controllerType=0 controllerNumber=1 scan=85681	3	1	YCVGDEVSMADVCLVPQVANAER	na	96	na	1
+example.45246.45246.2	controllerType=0 controllerNumber=1 scan=45246	2	1	VITSGFNALEK	na	84	na	1
+example.44918.44918.2	controllerType=0 controllerNumber=1 scan=44918	2	1	VITSGFNALEK	na	73	na	1
+example.74243.74243.3	controllerType=0 controllerNumber=1 scan=74243	3	1	ADKPILYSYFR	na	87	na	1
+example.7168.7168.2	controllerType=0 controllerNumber=1 scan=7168	2	1	ILQSTAGK	na	85	na	1
+example.76874.76874.3	controllerType=0 controllerNumber=1 scan=76874	3	1	YCVGDEVSMADVCLVPQVANAER	na	111	na	1
+example.74350.74350.4	controllerType=0 controllerNumber=1 scan=74350	4	1	QAGKPILYSYFRSSCSWRVRIALA	na	-33	na	1
+example.14302.14302.3	controllerType=0 controllerNumber=1 scan=14302	3	1	QAGKPILYSY	na	-33	na	1
+example.45411.45411.3	controllerType=0 controllerNumber=1 scan=45411	3	1	MQAGKPILYSYFRSS	na	-30	na	1
+example.46511.46511.2	controllerType=0 controllerNumber=1 scan=46511	2	1	QAGKPILYSY	na	-42	na	1
