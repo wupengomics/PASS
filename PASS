@@ -1,0 +1,111 @@
+#!/usr/bin/perl
+
+use Getopt::Long qw(:config no_ignore_case);
+use Pod::Usage;
+
+=pod
+
+=head1 DESCRIPTION
+
+    Proteome alternative splicing screening.
+
+=head1 USAGE 
+
+    PASS [options] -g <genome> -f <genes.gtf> -r <reads.fastq> -s <MSGFPlus.jar> -m <example.mzML>
+
+    Options:
+    -g    Genome bowtie2 index name.
+    -f    Gene annotation file, .gtf format.
+    -r    File names for sequencing reads, .fastq format.
+          - Compressed files (.fastq.gz) are also supported.
+          - Paired-end files separated by commas.
+    -t    Path to tophat, eg. /home/user/bin/tophat
+          - By default, we try to search tophat in system PATH.
+    -c    Path to cufflinks, eg. /home/user/bin/cufflinks
+          - By default, we try to search cufflinks in system PATH. 
+    -p    Number of used threads. [Default: 12]
+    -s    Path to MSGFPlus.jar. eg. ~/software/MSGF.
+    -m    MS/MS file. 
+          - Support file formats including .mzML, .mzXML, .mgf, .ms2, .pkl and _dta.txt
+          - Spectra should be centroided.
+    -d    Modification file name.
+    -o    Output folder. [Default: ./PASS_out]
+    -h    Help message.
+
+=head1 AUTHOR
+
+    Contact:     Peng Wu; wupeng1@ihcams.ac.cn
+    Last update: 2019-4-24
+
+=cut
+
+## Parsing arguments from command line
+($genome, $genegtf, $reads, $tophat, $cufflinks, $threads, $msms, $exe, $mod, $outfolder, $help);
+
+GetOptions(
+    'g:s' => \$genome,
+    'f:s' => \$genegtf,
+    'r:s' => \$reads,
+    't:s' => \$tophat,
+    'c:s' => \$cufflinks,
+    'p:i' => \$threads,
+    'm:s' => \$msms,
+    's:s' => \$exe,
+    'd:s' => \$mod,
+    'o:s' => \$outfolder,
+    'h|help' => \$help
+);
+
+## Print usage  
+pod2usage( { -verbose => 2, -output => \*STDERR } ) if ( $help );
+( $genome and  $genegtf and $reads and $msms ) or pod2usage();
+
+## Set default
+$tophat ||= `which tophat`;
+chomp $tophat;
+$tophat or pod2usage();
+
+$cufflinks ||= `which cufflinks`;
+chomp $cufflinks;
+$cufflinks or pod2usage();
+
+$exe ||= "~/software/MSGF";
+
+$mod ||= "$exe/MSGFPlus_Mods1.txt";
+
+$threads ||= 12;
+
+$outfolder ||= "./PASS_out";
+
+$datestring = localtime();
+print "[$datestring] ------Start PASS program------\n";
+print "******PASS: Proteome Alternative Splicing Screening******\n";
+print "=========================================================\n\n";
+
+print "[$datestring] ------Step1 processRNASEQ-----\n\n";
+#Step1 processRNASEQ.pl
+`perl processRNASEQ.pl -g $genome -f $genegtf -r $reads -t $tophat -c $cufflinks -p $threads -o $outfolder`;
+
+$datestring = localtime();
+print "[$datestring] ---------Step2 getORF---------\n\n";
+#Step2 getORF.pl
+`perl getORF.pl -f $outfolder/transcripts.gtf -g $genome.fa -o $outfolder`;
+
+$datestring = localtime();
+print "[$datestring] --------Step3 searchMS--------\n\n";
+#Step3 searchMS.pl
+`perl searchMS.pl -s $exe -m $msms -f $outfolder/protein.longestorf.fa -p $threads -t $mod -o $outfolder`;
+
+$datestring = localtime();
+print "[$datestring] -------Step4 generateSAM------\n\n";
+#Step4 
+`perl generateSAM.pl -m $outfolder/PSM.tab -f $outfolder/transcripts.longestorf.gtf -t $outfolder/transcript.longestorf.fa -p $outfolder/protein.longestorf.fa -o $outfolder`;
+
+$datestring = localtime();
+print "[$datestring] --------Step5 screenAS--------\n\n";
+#Step5
+`perl screenAS.pl -s $outfolder/PSM.sam -g $outfolder/transcripts.longestorf.gtf -o $outfolder`;
+`rm $outfolder/transcripts*gtf $outfolder/*fa $outfolder/PSM*`;
+
+$datestring = localtime();
+print "[$datestring] ------Finish PASS program-----\n";

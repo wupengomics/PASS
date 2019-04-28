@@ -1,0 +1,116 @@
+#!/usr/bin/perl
+
+use Getopt::Long qw(:config no_ignore_case);
+use Pod::Usage;
+
+=pod
+
+=head1 DESCRIPTION
+
+    Search MS file against protein sequence database.
+
+=head1 USAGE 
+
+    searchMS [options] -s <MSGFPlus.jar> -m <example.mzML> -f <protein.fa>
+
+    Options:
+    -s    Path to MSGFPlus.jar. eg. ~/software/MSGF.
+    -m    MS/MS file. 
+          - Support file formats including .mzML, .mzXML, .mgf, .ms2, .pkl and _dta.txt
+          - Spectra should be centroided.
+    -f    Protein sequences
+    -p    Number of used threads. [Default: 12]
+    -t    Modification file name.
+    -o    Output folder. [Default: ./PASS_out]
+    -h    Help message.
+
+=head1 AUTHOR
+
+    Contact:     Peng Wu; wupeng1@ihcams.ac.cn
+    Last update: 2019-4-24
+
+=cut
+
+## Parsing arguments from command line
+($exe,$msms,$fa,$threads,$mod,$outfolder,$help);
+
+GetOptions(
+    'm:s' => \$msms,
+    's:s' => \$exe,
+    'f:s' => \$fa,
+    'p:i' => \$threads,
+    't:s' => \$mod,
+    'o:s' => \$outfolder,
+    'h|help' => \$help
+);
+
+## Print usage  
+pod2usage( { -verbose => 2, -output => \*STDERR } ) if ( $help );
+($exe and $msms and $fa) or pod2usage();
+
+$exe ||= "~/software/MSGF";
+
+$threads ||= 12;
+
+$outfolder ||= "./PASS_out";
+mkdir $outfolder;
+
+$mod ||= "$exe/MSGFPlus_Mods1.txt";
+
+`java -jar $exe/MSGFPlus.jar -s $msms -d $fa -thread $threads -inst 3 -t 20ppm -ti -1,2 -ntt 1 -tda 1 -mod $mod -o $outfolder/PSM.mzid`;
+`java -cp $exe/MSGFPlus.jar edu.ucsd.msjava.ui.MzIDToTsv -i $outfolder/PSM.mzid -o $outfolder/PSM.tsv`;
+$fa=~s/fa/revCat/;
+`rm $fa.*`;
+
+open(PSM,"$outfolder/PSM.tsv");
+open(OUT,">$outfolder/PSM.tab");
+
+print OUT "spectrum\tspectrumNativeID\tassumed_charge\thit_rank\tpeptide\tnum_missed_cleavages\tmvh\tmodification\tNTT\n";
+
+
+while(<PSM>){
+    chomp;
+    @l=split/\t/;
+    if(/^#/){
+        for $i (0..$#l){
+            if($l[$i] eq "#SpecFile"){
+                $rawfile=$i;
+            }elsif($l[$i] eq "SpecID"){
+                $specid=$i;
+            }elsif($l[$i] eq "ScanNum"){
+                $scannumber=$i;
+            }elsif($l[$i] eq "Peptide"){
+                $peptide=$i;
+            }elsif($l[$i] eq "SpecEValue"){
+                $specevalue=$i;
+            }elsif($l[$i] eq "Charge"){
+                $charge=$i;
+            }elsif($l[$i] eq "MSGFScore"){
+                $score=$i;
+            }
+        }
+    }else{
+        if($l[$specevalue]<0.05){
+            $l[$rawfile]=~s/\..*//;
+            print OUT "$l[$rawfile].$l[$scannumber].$l[$scannumber].$l[$charge]\t";
+            print OUT "$l[$specid]\t";
+            print OUT "$l[$charge]\t";
+            print OUT "1\t";
+            $l[$peptide]=~s/\d//g;
+            $l[$peptide]=~s/\.//g;
+            $l[$peptide]=~s/\+//g;
+            print OUT "$l[$peptide]\t";
+            print OUT "na\t";
+            print OUT "$l[$score]\t";
+            print OUT "na\t";
+            print OUT "1\n";
+        }
+        
+    }
+}
+
+close MSMS;
+close OUT;
+
+unlink "$outfolder/PSM.mzid";
+unlink "$outfolder/PSM.tsv";

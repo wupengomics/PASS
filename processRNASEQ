@@ -1,0 +1,127 @@
+#!/usr/bin/perl
+
+use Getopt::Long qw(:config no_ignore_case);
+use Pod::Usage;
+
+=pod
+
+=head1 DESCRIPTION
+
+    Align RNA-Seq reads to the reference genome and reconstruct transcripts.
+
+=head1 USAGE 
+
+    processRNASEQ [options] -g <genome> -f <.gtf> -r <.fastq>
+
+    Options:
+    -g    Genome bowtie2 index name.
+    -f    Gene annotation file, .gtf format.
+    -r    File names for sequencing reads, .fastq format.
+          - Compressed files (.fastq.gz) are also supported.
+          - Paired-end files separated by commas.
+    -t    Path to tophat, eg. /home/user/bin/tophat
+          - By default, we try to search tophat in system PATH.
+    -c    Path to cufflinks, eg. /home/user/bin/cufflinks
+          - By default, we try to search cufflinks in system PATH. 
+    -p    Number of used threads. [Default: 12]
+    -o    Output folder. [Default: ./PASS_out]
+    -h    Help message.
+
+=head1 AUTHOR
+
+    Contact:     Peng Wu; wupeng1@ihcams.ac.cn
+    Last update: 2019-4-24
+
+=cut
+
+## Parsing arguments from command line
+($genome, $genegtf, $reads, $tophat, $cufflinks, $threads, $outfolder);
+
+GetOptions(
+    'g:s' => \$genome,
+    'f:s' => \$genegtf,
+    'r:s' => \$reads,
+    't:s' => \$tophat,
+    'c:s' => \$cufflinks,
+    'p:i' => \$threads,
+    'o:s' => \$outfolder,
+    'h|help' => \$help
+);
+
+## Print usage  
+pod2usage( { -verbose => 2, -output => \*STDERR } ) if ( $help );
+( $genome and  $genegtf and $reads ) or pod2usage();
+
+## Set default
+$tophat ||= `which tophat`;
+chomp $tophat;
+$tophat or pod2usage();
+
+$cufflinks ||= `which cufflinks`;
+chomp $cufflinks;
+$cufflinks or pod2usage();
+
+$threads ||= 12;
+$outfolder ||= "./PASS_out";
+
+if($reads=~/,/){
+    @readsfile=split/,/,$reads;
+    `$tophat -p $threads -G $genegtf -o $outfolder $genome $readsfile[0] $readsfile[1]`;
+}else{
+    `$tophat -p $threads -G $genegtf -o $outfolder $genome $reads`;
+}
+
+`$cufflinks -o $outfolder -p $threads $outfolder/accepted_hits.bam`;
+
+$gtffile="$outfolder/transcripts.gtf";
+open(GTF,$gtffile);
+$outgtffile="$outfolder/newtranscripts.gtf";
+open(OUT,">$outgtffile");
+
+while(<GTF>){
+    chomp;
+    $line=$_;
+    @lines=split/\t/;
+    if(/\ttranscript\t/){
+        if($strand eq "-"){
+            @order=reverse @order;
+            for(@order){
+                print OUT "$_\n";
+            }
+        }
+        @order=();
+        print OUT "$line\n";
+        $strand=$lines[6];
+    }
+    if(/\texon\t/){
+        if($lines[6] eq "+"){
+            print OUT "$line\n";
+        }else{
+            push @order,$line;
+        }
+    }
+}
+if($strand eq "-"){
+    @order=reverse @order;
+    for(@order){
+        print OUT "$_\n";
+    }
+}
+@order=();
+
+close GTF;
+close OUT;
+
+`rm $outfolder/logs -r`;
+`mv $outgtffile $gtffile`;
+
+unlink "$outfolder/prep_reads.info";
+unlink "$outfolder/unmapped.bam";
+unlink "$outfolder/skipped.gtf";
+unlink "$outfolder/junctions.bed";
+unlink "$outfolder/isoforms.fpkm_tracking";
+unlink "$outfolder/insertions.bed";
+unlink "$outfolder/genes.fpkm_tracking";
+unlink "$outfolder/deletions.bed";
+unlink "$outfolder/align_summary.txt";
+unlink "$outfolder/accepted_hits.bam";
