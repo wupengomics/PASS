@@ -1,2 +1,0 @@
-ID	GeneID	geneSymbol	chr	strand	distalExonStart_0base	distalExonEnd	proximalES	proximalEE	flankingES	flankingEE	IC	SC	Novel
-1	"CUFF.1"	"CUFF.1"	chr12	+	87147626	87147844	87157517	87157660	87157892	87157944	1	3	
