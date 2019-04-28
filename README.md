@@ -6,230 +6,180 @@
 <img src="./workflow.png" width = "80%" height = "80%" />
 
 
-- **Version**: 1.0.0
+- **Version**: 1.1.0
 
 
 - **System requirements**
 
-  - Install [perl](https://www.perl.org)
-  - Install [R](https://www.r-project.org)
-  - Install [proABMr R package](https://bioconductor.org/packages/release/bioc/html/proBAMr.html)
-  - Install [python](https://www.python.org)
-  - Install [EMBOSS](https://emboss.sourceforge.net/download/)
-  - Install [bowtie2](https://bowtie-bio.sourceforge.net/bowtie2/), unless other alignment tool is used
-  - Install [Tophat2](https://ccb.jhu.edu/software/tophat/index.shtml), unless other alignment tool is used
-  - Install [Cufflinks](https://cole-trapnell-lab.github.io/cufflinks/), unless other assemble tool is used
-  - Install [MaxQuant](https://www.coxdocs.org/doku.php?id=maxquant:common:download_and_installation), unless other MS searching tool is used
+  - [Tophat2](https://cole-trapnell-lab.github.io/cufflinks/)
+    - wget tophat2-*.tar.gz
+    - tar -zxvf tophat2-*.tar.gz
+    - export PATH=/topaht2_install_path/:$PATH
+  - [Cufflinks](https://cole-trapnell-lab.github.io/cufflinks/)
+    - wget cufflinks-*.tar.gz
+    - tar -zxvf cufflinks-*.tar.gz
+    - export PATH=/cufflinks_install_path/:$PATH
+  - [MSGF+](https://github.com/MSGFPlus)
+    - wget MSGFPlus_v20190228.zip
+    - unzip MSGFPlus_v20190228.zip
 
 
 - **processRNASEQ**:
 
     - **Description**: Align RNA-Seq reads to the reference genome and reconstruct transcripts.
 
-    - **Usage**: `perl processRNASEQ.pl [options] [-g <genome>] [-f <.gtf>] [-r <.fastq>]`
+    - **Usage**: `processRNASEQ [options] -g <genome> -f <.gtf> -r <.fastq>`
 
         ```
-	    -g    Genome bowtie2 index name.
-	    -f    Gene annotation file, .gtf format.
-	    -r    File names for sequencing reads, .fastq format.
-	          - Compressed files (.fastq.gz) are also supported.
-	          - Paired-end files separated by commas.
-	    -t    Path to tophat, eg. /home/user/bin/tophat
-	          - By default, we try to search tophat in system PATH.
-	    -c    Path to cufflinks, eg. /home/user/bin/cufflinks
-	          - By default, we try to search cufflinks in system PATH. 
-	    -p    Number of used threads. [Default: 12]
-	    -o    Output folder. [Default: ./RNASEQ_output]
-	    -h    Help message.
-        ```
-
-    - **Example**: `perl processRNASEQ.pl -p 12 -g human.genome -f gencode.v27.gtf -r Sample_R1.fq.gz,Sample_R2.fq.gz`
-
-
-- **sortGTF**:   
-
-    - **Description**: Sort annotation file.
-
-    - **Usage**: `perl sortGTF.pl [-f input<.fastq>]`
-
-        ```
-        -f    File name of gene annotation, .gtf format.
-              - Recommend cufflinks to generate this file.  
+        -g    Genome bowtie2 index name.
+        -f    Gene annotation file, .gtf format.
+        -r    File names for sequencing reads, .fastq format.
+              - Compressed files (.fastq.gz) are also supported.
+              - Paired-end files separated by commas.
+        -t    Path to tophat, eg. /home/user/bin/tophat
+              - By default, we try to search tophat in system PATH.
+        -c    Path to cufflinks, eg. /home/user/bin/cufflinks
+              - By default, we try to search cufflinks in system PATH. 
+        -p    Number of used threads. [Default: 12]
+        -o    Output folder. [Default: ./PASS_out]
         -h    Help message.
         ```
 
-    - **Example**: `perl sortGTF.pl -f genes.cuff.gtf`
-
+    - **Example**: `processRNASEQ -g path_genomeandbowtie2index/genome.test -f exampleData/genes.test.gtf -r exampleData/Sample_R1.fastq.gz,exampleData/Sample_R2.fastq.gz`
 
 - **getORF**:
 
-    - **Description**: Perform local alignment on clean reads.
+    - **Description**: Protein sequences translation.
 
-    - **Usage**: `perl getORF.pl [-f <.gtf>] [-g <genome.fa>]`
+    - **Usage**: `getORF [options] -f <.gtf> -g <genome.fa>`
 
         ```
-        -f    File name of gene annotation, .gtf format.
-              - Recommend cufflinks to generate this file. 
-        -g    Reference genome file name, fasta format.
-        -h    Help message.
+	  -f    File name of gene annotation, .gtf format.
+		- Recommend cufflinks to generate this file. 
+	  -g    Reference genome file name, fasta format.
+	  -o    Output folder. [Default: ./PASS_out]
+	  -h    Help message.
         ```
 
-    - **Example**: `perl getORF.pl -f gene.cuff.sorted.gtf -g human.genome.fa`
+    - **Example**: `getORF -f exampleData/transcripts.gtf -g exampleData/genome.test.fa`
 
     - **Output**:
     
-    	```
-        genes.gtf             Must add the CDS information
-        transcript.fa         The sequence header includes protein ID, the corresponding gene ID and the CDS position. 
-                              - Example: >CUFF.11.2_1|ENSMUSG00000033845.9|CDS:63-218
-        protein.fa            The sequence header includes protein ID and the corresponding gene ID. 
-                              - Example: >CUFF.11.2_1|ENSMUSG00000033845.9
-	```
+	  - transcripts.longestorf.gtf
+	  - transcript.longestorf.fa
+	  - protein.longestorf.fa
 
 - **searchMS**:
 
     - **Description**: Search MS file against protein sequence database.
 
-    - **Usage**: `perl searchMS.pl [-b <MaxQuantCmd.exe>] [-p <mqpar.xml>]`
+    - **Usage**: `searchMS [options] -s <MSGF_path> -m <example.mzML> -f <protein.fa>`
 
         ```
-        -p    Parameter configuration file.
-              - Recommend to preconfigure the mqpar.xml file in MaxQuant GUI.
-        -b    Path to MaxQuantCmd.exe eg. /home/user/MaxQuant/bin/MaxQuantCmd.exe.
-              - By default, we try to search MaxQuantCmd.exe in system PATH.
-        -h    Help message.
+	  -s    Path to MSGFPlus.jar. eg. ~/software/MSGF.
+	  -m    MS/MS file. 
+		- Support file formats including .mzML, .mzXML, .mgf, .ms2, .pkl and _dta.txt
+		- Spectral should be centroided.
+	  -f    Protein sequences
+	  -p    Number of used threads. [Default: 12]
+	  -t    Modification file name.
+	  -o    Output folder. [Default: ./PASS_out]
+	  -h    Help message.
         ```
 
-    - **Example**: `perl searchMS.pl -b /usr/local/bin/MaxQuantCmd.exe -p mqpar.xml`
-
-
-- **preparePSM**:
-
-    - **Description**: Prepare PSM from MaxQuant msms.txt results
-
-    - **Usage**: `perl preparePSM.pl [-m <msms.txt>]`
-
-        ```
-        -m    File name of peptide spectral matches.
-              - Recommend MaxQuant to generate this file. 
-        -h    Help message.
-        ```
-
-    - **Example**: `perl preparePSM.pl -m sample.msms.txt`
-
-    - **Output**
-        - Default output file: sample.psm.tab
-        - Output format:
-        The output requires 9 columns:
-	
-          No.|Column
-          -|-
-          1|spectrum
-          2|spectrumNativeID
-          3|assumed_charge
-          4|hit_rank
-          5|peptide
-          6|num_missed_cleavages
-          7|mvh
-          8|modification
-          9|NTT
-
+    - **Example**: `searchMS -s ~/software/MSGF -m exampleData/example.mzML -f exampleData/protein.longestorf.fa`
+    
+    - **Output**:
+    
+      - PSM.tab
 
 - **generateSAM**:
 
     - **Description**: Convert peptide spectal matches to alignment file.
 
-    - **Usage**: `perl generateSAM.pl [-m <psm.tab>] [-f <genes.gtf>] [-t <transcript.fa>] [-p <protein.fa>] [-o <.sam>]`
+    - **Usage**: `generateSAM [options] -m <PSM> -f <.gtf> -t <transcript.fa> -p <protein.fa>`
 
         ```
-        -m    Peptide spectral matches.
-              - Original msms files require conversion format via preparePSM.pl.
-        -f    File name of gene annotation, .gtf format.
-        -t    File name of transcript sequences, .fa format.
-        -p    File name of protein sequences, .fa format.
-        -o    Output file, .sam format.
-        -h    Help message.
+	  -m    Peptide spectral matches.
+	  -f    File name of gene annotation, .gtf format.
+	  -t    File name of transcript sequences, .fa format.
+	  -p    File name of protein sequences, .fa format.
+	  -o    Output folder. [Default: ./PASS_out]
+	  -h    Help message.
         ```
 
-    - **Example**: `perl generateSAM.pl -m sample.psm.tab -f genes.gtf -t transcript.fa -p protein.fa -o sample.sam`
+    - **Example**: `generateSAM -m exampleData/PSM.tab -f exampleData/transcripts.longestorf.gtf -t exampleData/transcript.longestorf.fa -p exampleData/protein.longestorf.fa`
 
     - **Output**:
-        - Output .sam format could reference to [proBAM](http://www.psidev.info/probam) format.
+        - PSM.sam 
 
 
-- **detectAS**:
+- **screenAS**:
 
     - **Description**: Detect AS events from annotation and alignment file.
 
     - **Note**: This function code is sourced from [MATS](https://rnaseq-mats.sourceforge.net).
 
-    - **Usage**: `python detectAS.py [<genes.gtf>] [<outputPrefix>] [<SAMfile>]`
+    - **Usage**: `screenAS [options] -s <PSM.sam> -g <genes.gtf>`
 
         ```
-        genes.gtf           File name of gene annotation, .gtf format.
-        outputPrefix        Prefix of output AS event files
-        SAMfile            File name of alignment file. 
+	  -s    Sam format file generated by proteome identification.
+	  -g    Gene annotation file, .gtf format.
+	  -o    Output folder. [Default: ./PASS_out]
+	  -h    Help message.
         ```
 
-    - **Example**: `python detectAS.py genes.gtf fromGTF sample.sam ./temp`
+    - **Example**: `screenAS -s exampleData/PSM.sam -g exampleData/transcripts.longestorf.gtf`
 
     - **Output**
-      - Output files list:
-      ```
-      fromGTF.SE.txt
-      fromGTF.MXE.txt
-      fromGTF.A5SS.txt
-      fromGTF.A3SS.txt
-      fromGTF.RI.txt
-      fromGTF.AFE.txt
-      fromGTF.ALE.txt
-      ```
-      - Format:
+
+      - summary.txt
+      - PASS.SE.txt
+      - PASS.RI.txt
+      - PASS.MXE.txt
+      - PASS.A5SS.txt
+      - PASS.A3SS.txt
+      - PASS.AFE.txt
+      - PASS.ALE.txt
       
-      Column|Description
-      -|-
-      ID|AS event id
-      GeneID|Gene id
-      geneSymbol|Gene name
-      chr|Chromosome
-      strand|Strand of the gene
-      event coordinates|Coordinates of the exons in the events, with multiple columns
-      
+- **PASS**: 
 
-- **quantifyAS**:
-
-    - **Description**: Quantify AS by the alignment file.
-    - **Note**: This function code is sourced from [MATS](https://rnaseq-mats.sourceforge.net).
-
-    - **Usage**: `python quantifyAS.py [<ASPrefix>] [<SAMfile>] [<outdir>]`
-        ```
-        ASPrefix         Prefix of AS event files
-        SAMfile         File name of alignment file. 
-        outdir           Folder of output files.
-        ```
-
-    - **Example**: `python quantifyAS.py fromGTF sample.sam ./`
-
-    - **Output**
-      - Output files list:
+    - **Description**: All-in-one command.
+    
+    - **Usage**: `PASS [options] -g <genome> -f <genes.gtf> -r <reads.fastq> -s <MSGFPlus.jar> -m <example.mzML>`
+    
       ```
-      JCEC.SE.txt
-      JCEC.MXE.txt
-      JCEC.A5SS.txt
-      JCEC.A3SS.txt
-      JCEC.RI.txt
-      JCEC.AFE.txt
-      JCEC.ALE.txt
+	  -g    Genome bowtie2 index name.
+	  -f    Gene annotation file, .gtf format.
+	  -r    File names for sequencing reads, .fastq format.
+		- Compressed files (.fastq.gz) are also supported.
+		- Paired-end files separated by commas.
+	  -t    Path to tophat, eg. /home/user/bin/tophat
+		- By default, we try to search tophat in system PATH.
+	  -c    Path to cufflinks, eg. /home/user/bin/cufflinks
+		- By default, we try to search cufflinks in system PATH. 
+	  -p    Number of used threads. [Default: 12]
+	  -s    Path to MSGFPlus.jar. eg. ~/software/MSGF.
+	  -m    MS/MS file. 
+		- Support file formats including .mzML, .mzXML, .mgf, .ms2, .pkl and _dta.txt
+		- Spectra should be centroided.
+	  -d    Modification file name.
+	  -o    Output folder. [Default: ./PASS_out]
+	  -h    Help message.
       ```
       
-      - Format:
-      
-      Column|Description
-      -|-
-      ID|AS event id
-      IC|inclusion counts
-      SC|skipping counts
-      
+    - **Example**: `PASS -g path_genomeandbowtie2index/genome.test -f exampleData/genes.test.gtf -r exampleData/Sample_R1.fastq.gz,exampleData/Sample_R2.fastq.gz -s ~/software/MSGF -m exampleData/example.mzML -p 4`
+    
+   - **Output**: 
+
+     - summary.txt
+     - PASS.SE.txt
+     - PASS.RI.txt
+     - PASS.MXE.txt
+     - PASS.A5SS.txt
+     - PASS.A3SS.txt
+     - PASS.AFE.txt
+     - PASS.ALE.txt
 
 - **Contact**:
 
