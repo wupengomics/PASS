@@ -59,7 +59,7 @@
 
         ```
 	  -f    File name of gene annotation, .gtf format.
-		- Recommend cufflinks to generate this file. 
+              - Recommend cufflinks to generate this file. 
 	  -g    Reference genome file name, fasta format.
 	  -o    Output folder. [Default: ./PASS_out]
 	  -h    Help message.
@@ -82,8 +82,8 @@
         ```
 	  -s    Path to MSGFPlus.jar. eg. ~/software/MSGF.
 	  -m    MS/MS file. 
-		- Support file formats including .mzML, .mzXML, .mgf, .ms2, .pkl and _dta.txt
-		- Spectral should be centroided.
+              - Support file formats including .mzML, .mzXML, .mgf, .ms2, .pkl and _dta.txt
+              - Spectral should be centroided.
 	  -f    Protein sequences
 	  -p    Number of used threads. [Default: 12]
 	  -t    Modification file name.
@@ -156,8 +156,8 @@
 	  -g    Genome bowtie2 index name.
 	  -f    Gene annotation file, .gtf format.
 	  -r    File names for sequencing reads, .fastq format.
-		- Compressed files (.fastq.gz) are also supported.
-		- Paired-end files separated by commas.
+              - Compressed files (.fastq.gz) are also supported.
+              - Paired-end files separated by commas.
 	  -t    Path to tophat, eg. /home/user/bin/tophat
 		- By default, we try to search tophat in system PATH.
 	  -c    Path to cufflinks, eg. /home/user/bin/cufflinks
@@ -165,8 +165,8 @@
 	  -p    Number of used threads. [Default: 12]
 	  -s    Path to MSGFPlus.jar. eg. ~/software/MSGF.
 	  -m    MS/MS file. 
-		- Support file formats including .mzML, .mzXML, .mgf, .ms2, .pkl and _dta.txt
-		- Spectra should be centroided.
+              - Support file formats including .mzML, .mzXML, .mgf, .ms2, .pkl and _dta.txt
+              - Spectra should be centroided.
 	  -d    Modification file name.
 	  -o    Output folder. [Default: ./PASS_out]
 	  -h    Help message.
